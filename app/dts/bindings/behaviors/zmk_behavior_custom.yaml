@@ -12,4 +12,4 @@ properties:
     required: false
 
 binding-cells:
-  - name: binding
+  - name: "binding"

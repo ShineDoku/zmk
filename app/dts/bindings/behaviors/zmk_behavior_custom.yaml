@@ -11,5 +11,5 @@ properties:
     description: Label for the custom behavior
     required: false
 
-binding-cells:
-  - name: "binding"
+#binding-cells:
+#  - name: "binding"

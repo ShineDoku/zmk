@@ -1,0 +1,15 @@
+#app/dts/bindings/behaviors/zmk_behavior_custom.yaml
+
+description: Custom behavior for repeating J and K keys on hold
+
+compatible: "zmk,behavior-custom"
+
+properties:
+  # Здесь можно определить дополнительные свойства, если они нужны
+  label:
+    type: string
+    description: Label for the custom behavior
+    required: false
+
+binding-cells:
+  - name: binding

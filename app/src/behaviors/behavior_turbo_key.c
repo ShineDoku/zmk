@@ -136,7 +136,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
          for (int i = data->start_index; i < data->start_index + data->count; i++) {
-        if (!handle_control_binding(&data, &bindings[i])) 
+        if (!handle_control_binding(&data, &cfg->bindings[i])) 
         {
         zmk_behavior_queue_add(event.position, cfg->bindings[i], true, cfg->tap_ms);
         zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 0);

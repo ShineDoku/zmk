@@ -55,6 +55,43 @@ struct behavior_turbo_state {
     uint32_t press_bindings_count;
 };
 
+#define TAP_TIME DT_LABEL(DT_INST(0, zmk_macro_control_tap_time))
+#define WAIT_TIME DT_LABEL(DT_INST(0, zmk_macro_control_wait_time))
+#define WAIT_REL DT_LABEL(DT_INST(0, zmk_macro_pause_for_release))
+
+#define ZM_IS_NODE_MATCH(a, b) (strcmp(a, b) == 0)
+#define IS_TAP_MODE(dev) ZM_IS_NODE_MATCH(dev, TAP_MODE)
+#define IS_PRESS_MODE(dev) ZM_IS_NODE_MATCH(dev, PRESS_MODE)
+#define IS_RELEASE_MODE(dev) ZM_IS_NODE_MATCH(dev, REL_MODE)
+
+#define IS_TAP_TIME(dev) ZM_IS_NODE_MATCH(dev, TAP_TIME)
+#define IS_WAIT_TIME(dev) ZM_IS_NODE_MATCH(dev, WAIT_TIME)
+#define IS_PAUSE(dev) ZM_IS_NODE_MATCH(dev, WAIT_REL)
+
+static bool handle_control_binding(struct behavior_turbo_state *state,
+                                   const struct zmk_behavior_binding *binding) {
+    if (IS_TAP_MODE(binding->behavior_dev)) {
+        state->mode = MACRO_MODE_TAP;
+        LOG_DBG("macro mode set: tap");
+    } else if (IS_PRESS_MODE(binding->behavior_dev)) {
+        state->mode = MACRO_MODE_PRESS;
+        LOG_DBG("macro mode set: press");
+    } else if (IS_RELEASE_MODE(binding->behavior_dev)) {
+        state->mode = MACRO_MODE_RELEASE;
+        LOG_DBG("macro mode set: release");
+    } else if (IS_TAP_TIME(binding->behavior_dev)) {
+        state->tap_ms = binding->param1;
+        LOG_DBG("macro tap time set: %d", state->tap_ms);
+    } else if (IS_WAIT_TIME(binding->behavior_dev)) {
+        state->wait_ms = binding->param1;
+        LOG_DBG("macro wait time set: %d", state->wait_ms);
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 static int behavior_turbo_init(const struct device *dev) {
     const struct behavior_turbo_config *cfg = dev->config;
     struct behavior_turbo_state *state = dev->data;

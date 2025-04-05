@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_turbo_key
 
-#include <zephyr/device.h>
+//#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <zephyr/logging/log.h>
+//#include <zephyr/logging/log.h>
 
 #include <zmk/hid.h>
 #include <zmk/event_manager.h>

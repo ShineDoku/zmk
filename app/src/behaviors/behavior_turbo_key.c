@@ -61,7 +61,6 @@ static int behavior_turbo_init(const struct device *dev) {
     state->release_state.start_index = cfg->count;
     state->release_state.count = 0;
 
-    LOG_DBG("Precalculate initial release state:");
     for (int i = 0; i < cfg->count; i++) {
         if (handle_control_binding(&state->release_state, &cfg->bindings[i])) {
             // Updated state used for initial state on release.
@@ -69,7 +68,6 @@ static int behavior_turbo_init(const struct device *dev) {
             state->release_state.start_index = i + 1;
             state->release_state.count = cfg->count - state->release_state.start_index;
             state->press_bindings_count = i;
-            LOG_DBG("Release will resume at %d", state->release_state.start_index);
             break;
         } else {
             // Ignore regular invokable bindings

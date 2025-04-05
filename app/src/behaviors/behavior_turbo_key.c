@@ -110,6 +110,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         zmk_behavior_queue_add(event.position, cfg->bindings[i], true, cfg->tap_ms);
         zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 0);
         }
+         }
         reset_timer(data, event);
     } else {
         clear_turbo(data);

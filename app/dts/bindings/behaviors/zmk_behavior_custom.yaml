@@ -11,5 +11,6 @@ properties:
     description: Label for the custom behavior
     required: false
 
+include: zero_param.yaml
 #binding-cells:
 #  - name: "binding"

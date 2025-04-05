@@ -65,7 +65,7 @@ struct behavior_turbo_state {
 #define IS_WAIT_TIME(dev) ZM_IS_NODE_MATCH(dev, WAIT_TIME)
 #define IS_PAUSE(dev) ZM_IS_NODE_MATCH(dev, WAIT_REL)
 
-static bool handle_control_binding(struct behavior_turbo_state *state,
+static bool handle_control_binding(struct behavior_turbo_data *state,
                                    const struct zmk_behavior_binding *binding) {
      if (IS_TAP_TIME(binding->behavior_dev)) {
         state->tap_ms = binding->param1;

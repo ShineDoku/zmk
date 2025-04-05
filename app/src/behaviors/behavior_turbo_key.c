@@ -32,16 +32,16 @@ struct behavior_turbo_data {
 
     int32_t press_time;
 
-    int tap_ms;
-    int wait_ms;
-    struct zmk_behavior_binding bindings[];
-
     // Timer Data
     bool timer_started;
     bool timer_cancelled;
     bool turbo_decided;
     int64_t release_at;
     struct k_work_delayable release_timer;
+
+    int tap_ms;
+    int wait_ms;
+    struct zmk_behavior_binding bindings[];
 };
 
 static int behavior_turbo_key_init(const struct device *dev) { return 0; };

@@ -48,15 +48,15 @@ struct behavior_turbo_data {
     struct zmk_behavior_binding bindings[];
 };
 
-struct behavior_turbo_key_state {
+struct behavior_turbo_state {
     struct behavior_turbo_data release_state;
 
     uint32_t press_bindings_count;
 };
 
-static int behavior_turbo_key_init(const struct device *dev) {
-    const struct behavior_turbo_key_config *cfg = dev->config;
-    struct behavior_turbo_key_state *state = dev->data;
+static int behavior_turbo_init(const struct device *dev) {
+    const struct behavior_turbo_config *cfg = dev->config;
+    struct behavior_turbo_state *state = dev->data;
     state->press_bindings_count = cfg->count;
     state->release_state.start_index = cfg->count;
     state->release_state.count = 0;
@@ -168,7 +168,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     return 0;
 }
 
-static const struct behavior_driver_api behavior_turbo_key_driver_api = {
+static const struct behavior_driver_api behavior_turbo_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
 };
@@ -188,8 +188,8 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                        \
-    DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,              \
+    DEVICE_DT_INST_DEFINE(n, behavior_turbo_init, NULL, &behavior_turbo_data_##n,              \
                           &behavior_turbo_config_##n, APPLICATION,                                 \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_turbo_key_driver_api);
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_turbo_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(TURBO_INST)

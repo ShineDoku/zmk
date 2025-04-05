@@ -15,6 +15,7 @@
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/behavior.h>
 #include <zmk/behavior_queue.h>
+#include <device.h>
 
 //LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -41,10 +42,40 @@ struct behavior_turbo_data {
 
     int tap_ms;
     int wait_ms;
+    uint16_t start_index;
+    uint16_t count;
     struct zmk_behavior_binding bindings[];
 };
 
-static int behavior_turbo_key_init(const struct device *dev) { return 0; };
+struct behavior_turbo_key_state {
+    struct behavior_macro_trigger_state release_state;
+
+    uint32_t press_bindings_count;
+};
+
+static int behavior_turbo_key_init(const struct device *dev) {  
+    const struct behavior_turbo_key_config *cfg = dev->config;
+    struct behavior_turbo_key_state *state = dev->data;
+    state->press_bindings_count = cfg->count;
+    state->release_state.start_index = cfg->count;
+    state->release_state.count = 0;
+
+    LOG_DBG("Precalculate initial release state:");
+    for (int i = 0; i < cfg->count; i++) {
+        if (handle_control_binding(&state->release_state, &cfg->bindings[i])) {
+            // Updated state used for initial state on release.
+        } else if (IS_PAUSE(cfg->bindings[i].behavior_dev)) {
+            state->release_state.start_index = i + 1;
+            state->release_state.count = cfg->count - state->release_state.start_index;
+            state->press_bindings_count = i;
+            LOG_DBG("Release will resume at %d", state->release_state.start_index);
+            break;
+        } else {
+            // Ignore regular invokable bindings
+        }
+    }
+
+    return 0; };
 
 static int stop_timer(struct behavior_turbo_data *data) {
     int timer_cancel_result = k_work_cancel_delayable(&data->release_timer);
@@ -83,8 +114,8 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
-     for (int i = state.start_index; i < state.start_index + state.count; i++) {
-        if (!handle_control_binding(&state, &bindings[i])) 
+     for (int i = data.start_index; i < data.start_index + data.count; i++) {
+        if (!handle_control_binding(&data, &bindings[i])) 
         {
     zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
     zmk_behavior_queue_add(event.position, data->bindings[i], false, 0);

@@ -48,7 +48,7 @@ struct behavior_turbo_data {
 };
 
 struct behavior_turbo_key_state {
-    struct behavior_macro_trigger_state release_state;
+    struct behavior_turbo_data release_state;
 
     uint32_t press_bindings_count;
 };

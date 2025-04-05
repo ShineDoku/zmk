@@ -16,7 +16,7 @@
 #include <zmk/behavior.h>
 #include <zmk/behavior_queue.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+//LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_turbo_config {
     int tap_ms;
@@ -56,7 +56,7 @@ static int stop_timer(struct behavior_turbo_data *data) {
 }
 
 static void clear_turbo(struct behavior_turbo_data *data) {
-    LOG_DBG("Turbo deactivated");
+    //LOG_DBG("Turbo deactivated");
     data->is_active = false;
     stop_timer(data);
 }
@@ -66,7 +66,7 @@ static void reset_timer(struct behavior_turbo_data *data, struct zmk_behavior_bi
     int32_t ms_left = data->release_at - k_uptime_get();
     if (ms_left > 0) {
         k_work_schedule(&data->release_timer, K_MSEC(ms_left));
-        LOG_DBG("Successfully reset turbo timer at position %d", data->position);
+        //LOG_DBG("Successfully reset turbo timer at position %d", data->position);
     }
 }
 
@@ -80,7 +80,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     if (data->timer_cancelled) {
         return;
     }
-    LOG_DBG("Turbo timer reached.");
+    //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
     zmk_behavior_queue_add(event.position, data->binding, true, data->tap_ms);
@@ -97,7 +97,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     if (!data->is_active) {
         data->is_active = true;
 
-        LOG_DBG("%d started new turbo", event.position);
+        //LOG_DBG("%d started new turbo", event.position);
         data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
         zmk_behavior_queue_add(event.position, cfg->binding, true, cfg->tap_ms);
@@ -118,7 +118,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     if (data->is_active) {
         data->is_pressed = false;
         int32_t elapsedTime = k_uptime_get() - data->press_time;
-        LOG_DBG("turbo elapsed time: %d", elapsedTime);
+        //LOG_DBG("turbo elapsed time: %d", elapsedTime);
         if (elapsedTime > cfg->toggle_term_ms) {
             clear_turbo(data);
         }

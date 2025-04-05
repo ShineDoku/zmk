@@ -113,7 +113,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
-     for (int i = data.start_index; i < data.start_index + data.count; i++) {
+     for (int i = data->start_index; i < data->start_index + data->count; i++) {
         if (!handle_control_binding(&data, &bindings[i])) 
         {
     zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);

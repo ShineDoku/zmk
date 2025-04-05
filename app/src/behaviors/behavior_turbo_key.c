@@ -25,7 +25,7 @@ struct behavior_turbo_config {
     int wait_ms;
     int toggle_term_ms;
     uint32_t count;
-    const struct zmk_behavior_binding bindings[];
+    struct zmk_behavior_binding bindings[];
 };
 
 struct behavior_turbo_data {
@@ -79,7 +79,7 @@ static bool handle_control_binding(struct behavior_turbo_data *state,
     return true;
 }
 
-static int behavior_turbo_init(const struct device *dev) {
+static int behavior_turbo_key_init(const struct device *dev) {
     const struct behavior_turbo_config *cfg = dev->config;
     struct behavior_turbo_state *state = dev->data;
     state->press_bindings_count = cfg->count;

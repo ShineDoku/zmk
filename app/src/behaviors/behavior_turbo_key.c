@@ -53,7 +53,7 @@ struct behavior_turbo_key_state {
     uint32_t press_bindings_count;
 };
 
-static int behavior_turbo_key_init(const struct device *dev) {  
+static int behavior_turbo_key_init(const struct device *dev) {
     const struct behavior_turbo_key_config *cfg = dev->config;
     struct behavior_turbo_key_state *state = dev->data;
     state->press_bindings_count = cfg->count;
@@ -172,14 +172,10 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-#define _TRANSFORM_ENTRY(idx, node)                                                                \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
-        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
-        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
-    }
+#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst)),
+
+#define TRANSFORMED_BEHAVIORS(n)                                                                   \
+    {UTIL_LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, n)},
 
 #define TURBO_INST(n)                                                                              \
     static struct behavior_turbo_config behavior_turbo_config_##n = {                              \

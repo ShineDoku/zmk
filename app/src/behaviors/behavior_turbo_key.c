@@ -62,19 +62,6 @@ static int behavior_turbo_init(const struct device *dev) {
     state->release_state.start_index = cfg->count;
     state->release_state.count = 0;
 
-    for (int i = 0; i < cfg->count; i++) {
-        if (handle_control_binding(&state->release_state, &cfg->bindings[i])) {
-            // Updated state used for initial state on release.
-        } else if (IS_PAUSE(cfg->bindings[i].behavior_dev)) {
-            state->release_state.start_index = i + 1;
-            state->release_state.count = cfg->count - state->release_state.start_index;
-            state->press_bindings_count = i;
-            break;
-        } else {
-            // Ignore regular invokable bindings
-        }
-    }
-
     return 0; };
 
 static int stop_timer(struct behavior_turbo_data *data) {
@@ -111,6 +98,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     if (data->timer_cancelled) {
         return;
     }
+    
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
@@ -130,6 +118,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     if (!data->is_active) {
         data->is_active = true;
 
+    data->start_index = 0;
+    data->count = data->press_bindings_count;
         //LOG_DBG("%d started new turbo", event.position);
         data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);

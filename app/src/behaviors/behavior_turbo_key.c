@@ -114,7 +114,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_turbo_config *cfg = dev->config;
     struct behavior_turbo_state *state = dev->data;
-    struct behavior_turbo_data *data = state->release_state;
+    struct behavior_turbo_data *data = &(state->release_state);
 
     if (!data->is_active) {
         data->is_active = true;

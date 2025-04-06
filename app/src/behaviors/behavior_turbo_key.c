@@ -113,13 +113,14 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_turbo_config *cfg = dev->config;
-    struct behavior_turbo_data *data = dev->data;
+    struct behavior_turbo_state *state = dev->data;
+    struct behavior_turbo_data *data = state->release_state;
 
     if (!data->is_active) {
         data->is_active = true;
 
     data->start_index = 0;
-    data->count = data->press_bindings_count;
+    data->count = state->press_bindings_count;
         //LOG_DBG("%d started new turbo", event.position);
         data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);

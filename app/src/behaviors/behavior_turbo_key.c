@@ -59,8 +59,8 @@ static int behavior_turbo_init(const struct device *dev) {
     const struct behavior_turbo_config *cfg = dev->config;
     struct behavior_turbo_state *state = dev->data;
     state->press_bindings_count = cfg->count;
-    state->release_state.start_index = cfg->count;
-    state->release_state.count = 0;
+    state->release_state.start_index = 0;
+    state->release_state.count = cfg->count;
 
     return 0; };
 
@@ -102,7 +102,6 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
-    data->start_index = 0;
      for (int i = data->start_index; i < data->start_index + data->count; i++) {
     zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
     zmk_behavior_queue_add(event.position, data->bindings[i], false, 0);
@@ -119,9 +118,6 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
     if (!data->is_active) {
         data->is_active = true;
-
-    data->start_index = 0;
-    data->count = state->press_bindings_count;
         //LOG_DBG("%d started new turbo", event.position);
         data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);

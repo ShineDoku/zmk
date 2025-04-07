@@ -166,6 +166,7 @@ static const struct behavior_driver_api behavior_turbo_driver_api = {
     static struct behavior_turbo_config behavior_turbo_config_##n = {                              \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
+        .count = DT_INST_PROP_LEN(n, bindings),                                                    \
         .toggle_term_ms = DT_INST_PROP(n, toggle_term_ms),                                         \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                        \
     static struct behavior_turbo_data behavior_turbo_data_##n = {                                  \

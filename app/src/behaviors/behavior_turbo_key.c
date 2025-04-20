@@ -104,7 +104,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
                                                .timestamp = k_uptime_get()};
      for (int i = 0; i < data->start_index + data->count; i++) {
     zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
-    zmk_behavior_queue_add(event.position, data->bindings[i], false, 10);
+    zmk_behavior_queue_add(event.position, data->bindings[i], false, 70);
     zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
     zmk_behavior_queue_add(event.position, data->bindings[i], false, 150);
      }
@@ -125,7 +125,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
          for (int i = data->start_index; i < data->start_index + data->count; i++) {
         zmk_behavior_queue_add(event.position, cfg->bindings[i], true, cfg->tap_ms);
-        zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 10);
+        zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 70);
         zmk_behavior_queue_add(event.position, cfg->bindings[i], true, cfg->tap_ms);
         zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 150);
          }

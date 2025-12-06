@@ -7,7 +7,7 @@ manifest:
   projects:
     - name: zephyr
       remote: zmkfirmware
-      revision: v3.0.0+zmk-fixes
+      revision: v3.5.0+zmk-fixes
       clone-depth: 1
       import:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`

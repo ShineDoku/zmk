@@ -86,6 +86,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     zmk_behavior_queue_add(event.position, data->binding, true, data->tap_ms);
     zmk_behavior_queue_add(event.position, data->binding, false, 0);
     reset_timer(data, event);
+    k_work_schedule(d_work, K_MSEC(100));
 }
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,

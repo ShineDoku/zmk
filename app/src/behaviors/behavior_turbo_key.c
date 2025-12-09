@@ -87,6 +87,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
+    int i;
     for(i = 0; i < data->count; i++){
         zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
         zmk_behavior_queue_add(event.position, data->bindings[i], false, 0);
@@ -100,6 +101,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_turbo_config *cfg = dev->config;
     struct behavior_turbo_data *data = dev->data;
+    int i;
 
     if (!data->is_active) {
         data->is_active = true;

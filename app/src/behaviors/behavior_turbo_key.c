@@ -90,7 +90,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     int i;
     for(i = 0; i < data->count; i++){
         zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
-        zmk_behavior_queue_add(event.position, data->bindings[i], false, 0);
+        zmk_behavior_queue_add(event.position, data->bindings[i], false, 10);
     }
     reset_timer(data, event)
 }
@@ -110,7 +110,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
         for(i = 0; i < data->count; i++){
             zmk_behavior_queue_add(event.position, cfg->bindings[i], true, cfg->tap_ms);
-            zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 0);
+            zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 10);
         }
         reset_timer(data, event);
     } else {

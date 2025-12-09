@@ -22,6 +22,7 @@ struct behavior_turbo_config {
     int tap_ms;
     int wait_ms;
     int toggle_term_ms;
+    uint32_t bindings_size;
     const struct zmk_behavior_binding *binding;
 };
 
@@ -34,6 +35,7 @@ struct behavior_turbo_data {
 
     int tap_ms;
     int wait_ms;
+    uint32_t bindings_size;
     struct zmk_behavior_binding *binding;
 
     // Timer Data
@@ -163,6 +165,10 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
     static struct behavior_turbo_data behavior_turbo_data_##n = {                                  \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
+        /* Используем сгенерированный выше массив */                                               \
+        .bindings = behavior_turbo_bindings_##n,                                                   \
+        /* Получаем размер массива с помощью макроса */                                            \
+        .bindings_size = ZMK_DT_INST_BEHAVIOR_BINDINGS_SIZE(n),                                    \
         /* Удаляем .binding = _TRANSFORM_ENTRY(0, n)} из data, оно вам там больше не нужно */       \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,              \

@@ -140,32 +140,26 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
 };
+
 #define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst)),
+
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \
     {UTIL_LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, n)},
 
-#define TURBO_INST(n)                                                                              \
-    /* Генерируем статический массив C-структур из DTS свойства bindings */                        \
-    static struct zmk_behavior_binding behavior_turbo_bindings_##n[] =                             \
-        TRANSFORMED_BEHAVIORS(n);                                                          \
-                                                                                                   \
+#define TURBO_INST(n)                                                                              
     static struct behavior_turbo_config behavior_turbo_config_##n = {                              \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
         .toggle_term_ms = DT_INST_PROP(n, toggle_term_ms),                                         \
-        /* Используем сгенерированный выше массив */                                               \
-        .bindings = behavior_turbo_bindings_##n,                                                   \
-        /* Получаем размер массива с помощью макроса */                                            \
-        .bindings_size = ZMK_DT_INST_BEHAVIOR_BINDINGS_SIZE(n),                                    \
-    };                                                                                             \
+        .bindings_size = DT_INST_PROP_LEN(n, bindings),                                            \
+        .bindings = TRANSFORMED_BEHAVIORS(n)};                                                     \
     static struct behavior_turbo_data behavior_turbo_data_##n = {                                  \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
-        /* Используем сгенерированный выше массив */                                               \
-        .bindings = behavior_turbo_bindings_##n,                                                   \
-        /* Получаем размер массива с помощью макроса */                                            \
-        .bindings_size = ZMK_DT_INST_BEHAVIOR_BINDINGS_SIZE(n),                                    \
-        /* Удаляем .binding = _TRANSFORM_ENTRY(0, n)} из data, оно вам там больше не нужно */       \
-    };                                                                                             \
+        .bindings_size = DT_INST_PROP_LEN(n, bindings),                                            \
+        .bindings = TRANSFORMED_BEHAVIORS(n)};                                                     \
+    DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,                 \
+                          &behavior_turbo_config_##n, APPLICATION,                                 \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_turbo_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(TURBO_INST)

@@ -86,7 +86,7 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
     for (int i = 0; i < data->bindings_size; i++) {
-        zmk_behavior_queue_add(event.position, &data->bindings[i], true, cfg->tap_ms); // Нажатие
+        zmk_behavior_queue_add(event.position, &data->bindings[i], true, data->tap_ms); // Нажатие
         zmk_behavior_queue_add(event.position, &data->bindings[i], false, 0); // Отпускание
     }
     reset_timer(data, event);

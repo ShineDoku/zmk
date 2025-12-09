@@ -24,7 +24,7 @@ struct behavior_turbo_config {
     int tap_ms;
     int wait_ms;
     int toggle_term_ms;
-    const struct zmk_behavior_binding* bindings;
+    const struct zmk_behavior_binding bindings[];
 };
 
 struct behavior_turbo_data {
@@ -36,7 +36,7 @@ struct behavior_turbo_data {
 
     int tap_ms;
     int wait_ms;
-    struct zmk_behavior_binding* bindings;
+    struct zmk_behavior_binding bindings[];
 
     // Timer Data
     bool timer_started;

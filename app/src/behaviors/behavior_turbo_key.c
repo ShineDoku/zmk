@@ -24,7 +24,7 @@ struct behavior_turbo_config {
     int tap_ms;
     int wait_ms;
     int toggle_term_ms;
-    const struct zmk_behavior_binding bindings[];
+    struct zmk_behavior_binding bindings[];
 };
 
 struct behavior_turbo_data {

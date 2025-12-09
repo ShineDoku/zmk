@@ -146,7 +146,7 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \
     {UTIL_LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, n)},
 
-#define TURBO_INST(n)                                                                              
+#define TURBO_INST(n)                                                                              \
     static struct behavior_turbo_config behavior_turbo_config_##n = {                              \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
@@ -158,7 +158,7 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
         .bindings_size = DT_INST_PROP_LEN(n, bindings),                                            \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                     \
-    DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,                 \
+    DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,              \
                           &behavior_turbo_config_##n, APPLICATION,                                 \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_turbo_key_driver_api);
 

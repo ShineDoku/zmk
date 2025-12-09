@@ -69,7 +69,7 @@ static void reset_timer(struct behavior_turbo_data *data, struct zmk_behavior_bi
     if (ms_left > 0) {
         k_work_schedule(&data->release_timer, K_MSEC(ms_left));
         //LOG_DBG("Successfully reset turbo timer at position %d", data->position);
-    c
+    }
 }
 
 static void behavior_turbo_timer_handler(struct k_work *item) {

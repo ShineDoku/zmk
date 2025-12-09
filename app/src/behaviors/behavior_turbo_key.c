@@ -69,7 +69,7 @@ static void reset_timer(struct behavior_turbo_data *data, struct zmk_behavior_bi
     if (ms_left > 0) {
         k_work_schedule(&data->release_timer, K_MSEC(ms_left));
         //LOG_DBG("Successfully reset turbo timer at position %d", data->position);
-    }
+    c
 }
 
 static void behavior_turbo_timer_handler(struct k_work *item) {
@@ -87,9 +87,9 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
                                                .timestamp = k_uptime_get()};
 
     for (int i = 0; i < data->bindings_size; i++) {
-        zmk_behavior_queue_add(event.position, &data->bindings[i], true, data->tap_ms); // Нажатие
-        zmk_behavior_queue_add(event.position, &data->bindings[i], false, 0); // Отпускание
-
+        zmk_behavior_queue_add(event.position, &(data->bindings[i]), true, data->tap_ms); // Нажатие
+        zmk_behavior_queue_add(event.position, &(data->bindings[i]), false, 0); // Отпускание
+    }
     reset_timer(data, event);
     k_work_schedule(d_work, K_MSEC(100));
 }
@@ -109,8 +109,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
         for (int i = 0; i < cfg->bindings_size; i++) 
         {
-            zmk_behavior_queue_add(event.position, &cfg->bindings[i], true, cfg->tap_ms); // Нажатие
-            zmk_behavior_queue_add(event.position, &cfg->bindings[i], false, 0); // Отпускание
+            zmk_behavior_queue_add(event.position, &(cfg->bindings[i]), true, cfg->tap_ms); // Нажатие
+            zmk_behavior_queue_add(event.position, &(cfg->bindings[i]), false, 0); // Отпускание
         }
         reset_timer(data, event);
     } else {

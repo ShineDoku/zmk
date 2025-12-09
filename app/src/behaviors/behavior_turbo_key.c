@@ -24,6 +24,7 @@ struct behavior_turbo_config {
     int tap_ms;
     int wait_ms;
     int toggle_term_ms;
+    uint32_t count;
     struct zmk_behavior_binding bindings[];
 };
 
@@ -36,6 +37,7 @@ struct behavior_turbo_data {
 
     int tap_ms;
     int wait_ms;
+    uint32_t count;
 
     // Timer Data
     bool timer_started;
@@ -85,8 +87,10 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
-    zmk_behavior_queue_add(event.position, data->bindings[0], true, data->tap_ms);
-    zmk_behavior_queue_add(event.position, data->bindings[0], false, 0);
+    for(i = 0; i < data->count; i++){
+        zmk_behavior_queue_add(event.position, data->bindings[i], true, data->tap_ms);
+        zmk_behavior_queue_add(event.position, data->bindings[i], false, 0);
+    }
     reset_timer(data, event);
     k_work_schedule(d_work, K_MSEC(100));
 }
@@ -103,8 +107,10 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         //LOG_DBG("%d started new turbo", event.position);
         data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
-        zmk_behavior_queue_add(event.position, cfg->bindings[0], true, cfg->tap_ms);
-        zmk_behavior_queue_add(event.position, cfg->bindings[0], false, 0);
+        for(i = 0; i < data->count; i++){
+            zmk_behavior_queue_add(event.position, cfg->bindings[i], true, cfg->tap_ms);
+            zmk_behavior_queue_add(event.position, cfg->bindings[i], false, 0);
+        }
         reset_timer(data, event);
     } else {
         clear_turbo(data);
@@ -145,10 +151,12 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
         .toggle_term_ms = DT_INST_PROP(n, toggle_term_ms),                                         \
+        .count = DT_INST_PROP_LEN(n, bindings),                                                    \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                      \
     static struct behavior_turbo_data behavior_turbo_data_##n = {                                  \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
+        .count = DT_INST_PROP_LEN(n, bindings),                                                    \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                       \
     DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,              \
                           &behavior_turbo_config_##n, APPLICATION,                                 \

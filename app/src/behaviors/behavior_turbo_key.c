@@ -85,9 +85,9 @@ static void behavior_turbo_timer_handler(struct k_work *item) {
     //LOG_DBG("Turbo timer reached.");
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
-    for (int i = 0; i < cfg->bindings_size; i++) {
-        zmk_behavior_queue_add(event.position, &cfg->bindings[i], true, cfg->tap_ms); // Нажатие
-        zmk_behavior_queue_add(event.position, &cfg->bindings[i], false, 0); // Отпускание
+    for (int i = 0; i < data->bindings_size; i++) {
+        zmk_behavior_queue_add(event.position, &data->bindings[i], true, cfg->tap_ms); // Нажатие
+        zmk_behavior_queue_add(event.position, &data->bindings[i], false, 0); // Отпускание
     }
     reset_timer(data, event);
     k_work_schedule(d_work, K_MSEC(100));

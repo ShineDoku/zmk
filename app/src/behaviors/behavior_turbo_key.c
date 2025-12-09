@@ -173,8 +173,5 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
         .bindings_size = ZMK_DT_INST_BEHAVIOR_BINDINGS_SIZE(n),                                    \
         /* Удаляем .binding = _TRANSFORM_ENTRY(0, n)} из data, оно вам там больше не нужно */       \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,              \
-                          &behavior_turbo_config_##n, APPLICATION,                                 \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_turbo_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(TURBO_INST)

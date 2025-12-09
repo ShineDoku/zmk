@@ -140,20 +140,14 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
 };
-
-#define _TRANSFORM_ENTRY(idx, node)                                                                \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
-        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
-        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
-    }
+#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst)),
+#define TRANSFORMED_BEHAVIORS(n)                                                                   \
+    {UTIL_LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, n)},
 
 #define TURBO_INST(n)                                                                              \
     /* Генерируем статический массив C-структур из DTS свойства bindings */                        \
     static struct zmk_behavior_binding behavior_turbo_bindings_##n[] =                             \
-        ZMK_DT_INST_BEHAVIOR_BINDINGS(n);                                                          \
+        TRANSFORMED_BEHAVIORS(n);                                                          \
                                                                                                    \
     static struct behavior_turbo_config behavior_turbo_config_##n = {                              \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \

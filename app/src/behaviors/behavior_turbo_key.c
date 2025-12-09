@@ -149,7 +149,7 @@ static const struct behavior_driver_api behavior_turbo_key_driver_api = {
     static struct behavior_turbo_data behavior_turbo_data_##n = {                                  \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .wait_ms = DT_INST_PROP(n, wait_ms),                                                       \
-        .bindings = TRANSFORMED_BEHAVIOR(n)};                                                       \
+        .bindings = TRANSFORMED_BEHAVIORS(n)};                                                       \
     DEVICE_DT_INST_DEFINE(n, behavior_turbo_key_init, NULL, &behavior_turbo_data_##n,              \
                           &behavior_turbo_config_##n, APPLICATION,                                 \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_turbo_key_driver_api);

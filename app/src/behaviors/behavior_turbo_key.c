@@ -74,22 +74,21 @@ static void reset_timer(struct behavior_turbo_data *data, struct zmk_behavior_bi
 
 static void behavior_turbo_timer_handler(struct k_work *item) {
     struct k_work_delayable *d_work = k_work_delayable_from_work(item);
-    struct behavior_turbo_data *data = CONTAINER_OF(d_work, struct behavior_turbo_data, release_timer);
-    
-    const struct device *dev = device_get_binding(data->dev_name);
-    const struct behavior_turbo_config *cfg = dev->config;
-
-    if (!data->is_active || data->timer_cancelled) {
+    struct behavior_turbo_data *data =
+        CONTAINER_OF(d_work, struct behavior_turbo_data, release_timer);
+    if (!data->is_active) {
+        return;
+    }
+    if (data->timer_cancelled) {
         return;
     }
 
     struct zmk_behavior_binding_event event = {.position = data->position,
                                                .timestamp = k_uptime_get()};
 
-    for (int i = 0; i < cfg->bindings_size; i++) {
-        zmk_behavior_queue_add(event.position, &cfg->bindings[i], true, cfg->tap_ms); // Нажатие
-        zmk_behavior_queue_add(event.position, &cfg->bindings[i], false, 0); // Отпускание
-    }
+    for (int i = 0; i < data->bindings_size; i++) {
+        zmk_behavior_queue_add(event.position, &data->bindings[i], true, data->tap_ms); // Нажатие
+        zmk_behavior_queue_add(event.position, &data->bindings[i], false, 0); // Отпускание
 
     reset_timer(data, event);
     k_work_schedule(d_work, K_MSEC(100));
